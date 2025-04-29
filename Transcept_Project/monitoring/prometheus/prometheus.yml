@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'transcept-apis'
+    static_configs:
+      - targets: ['summarizer-service:8000', 'qa-service:8001']
+
+  - job_name: 'mlflow'
+    static_configs:
+      - targets: ['mlflow-service:5000']

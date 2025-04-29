@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transcept - Summarization & QA</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        textarea { width: 100%; height: 150px; margin-bottom: 20px; }
+        input, button { padding: 10px; margin: 5px; width: 30%; }
+        .output { margin-top: 30px; padding: 20px; background: #f9f9f9; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+    <h1>📝 Transcept - Lecture Summarization & QA</h1>
+
+    <h2>Summarize a Lecture</h2>
+    <textarea id="summarize-text" placeholder="Paste lecture text here..."></textarea><br>
+    <button onclick="summarize()">Summarize</button>
+
+    <div id="summary-output" class="output"></div>
+
+    <h2>Ask a Question about Lecture</h2>
+    <textarea id="context-text" placeholder="Paste lecture text here..."></textarea><br>
+    <input type="text" id="question-input" placeholder="Type your question here...">
+    <button onclick="askQuestion()">Ask</button>
+
+    <div id="answer-output" class="output"></div>
+
+    <script>
+        async function summarize() {
+            const text = document.getElementById("summarize-text").value;
+            const response = await fetch("http://localhost:8000/summarize", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text })
+            });
+            const data = await response.json();
+            document.getElementById("summary-output").innerText = "Summary:\n" + data.summary;
+        }
+
+        async function askQuestion() {
+            const context = document.getElementById("context-text").value;
+            const question = document.getElementById("question-input").value;
+            const response = await fetch("http://localhost:8001/answer", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ context, question })
+            });
+            const data = await response.json();
+            document.getElementById("answer-output").innerText = "Answer:\n" + data.answer;
+        }
+    </script>
+
+</body>
+</html>

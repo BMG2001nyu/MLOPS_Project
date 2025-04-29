@@ -1,0 +1,27 @@
+{
+    "dashboard": {
+      "title": "Transcept API Performance",
+      "panels": [
+        {
+          "type": "graph",
+          "title": "API Response Time",
+          "targets": [
+            {
+              "expr": "rate(http_server_requests_seconds_sum[1m])",
+              "legendFormat": "Summarizer API"
+            },
+            {
+              "expr": "rate(http_server_requests_seconds_sum[1m])",
+              "legendFormat": "QA API"
+            }
+          ],
+          "datasource": "Prometheus",
+          "yaxes": [
+            { "label": "seconds", "format": "s" },
+            { "label": "", "format": "short" }
+          ]
+        }
+      ]
+    }
+  }
+  

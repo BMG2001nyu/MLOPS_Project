@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: transcept-retrain-
+spec:
+  entrypoint: retrain-models
+
+  templates:
+  - name: retrain-models
+    steps:
+    - - name: train-summarizer
+        template: train-summarizer
+    - - name: train-qa
+        template: train-qa
+
+  - name: train-summarizer
+    container:
+      image: python:3.10-slim
+      command: ["bash", "-c"]
+      args: [
+        "pip install transformers datasets peft && \
+         cd /workspace && \
+         python train_summarization.py"
+      ]
+      volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+
+  - name: train-qa
+    container:
+      image: python:3.10-slim
+      command: ["bash", "-c"]
+      args: [
+        "pip install transformers datasets peft && \
+         cd /workspace && \
+         python train_qa.py"
+      ]
+      volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+
+  volumes:
+  - name: workspace
+    persistentVolumeClaim:
+      claimName: transcept-pvc
